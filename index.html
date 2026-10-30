@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#07030f" />
+    <meta name="description" content="GEOMASH — a neon rhythm platformer. One cube. No brakes. Pure rhythm." />
+    <title>GEOMASH — Neon Rhythm Platformer</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2307030f'/%3E%3Crect x='14' y='14' width='36' height='36' rx='4' fill='%232ef2ff'/%3E%3Crect x='24' y='24' width='16' height='16' fill='%23ff2fd0'/%3E%3C/svg%3E" />
+    <link rel="preload" href="/fonts/orbitron-900.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/rajdhani-600.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="stylesheet" href="/src/styles.css" />
+  </head>
+  <body>
+    <div id="app">
+      <canvas id="scene" aria-hidden="true"></canvas>
+      <div class="bg-wash" aria-hidden="true"></div>
+      <div class="scanlines" aria-hidden="true"></div>
+      <div class="vignette" aria-hidden="true"></div>
+      <div class="grain" aria-hidden="true"></div>
+
+      <div id="boot" class="boot">
+        <div class="boot-inner">
+          <div class="boot-mark">
+            <span class="boot-cube"></span>
+            <span class="boot-ring"></span>
+          </div>
+          <div class="boot-title">GEOMASH</div>
+          <div class="boot-sub">NEON RHYTHM ENGINE</div>
+          <div class="boot-bar"><i id="boot-fill"></i></div>
+          <div class="boot-row"><span id="boot-status">CALIBRATING BASS CANNON</span><span id="boot-pct">0%</span></div>
+        </div>
+      </div>
+
+      <header id="topbar" class="topbar">
+        <div class="brand">
+          <span class="brand-mark"><i></i></span>
+          <div class="brand-word">GEO<span>MASH</span></div>
+          <span class="brand-tag">V2</span>
+        </div>
+        <nav class="nav" aria-label="Main">
+          <button class="nav-btn is-active" data-nav="play">PLAY</button>
+          <button class="nav-btn" data-nav="levels">LEVELS</button>
+          <button class="nav-btn" data-nav="help">HOW TO PLAY</button>
+          <button class="nav-btn" data-nav="settings">SETTINGS</button>
+        </nav>
+        <div class="profile">
+          <div class="stat-chip" title="Stars collected"><span class="ico star">★</span><b id="stat-stars">0</b></div>
+          <div class="stat-chip" title="Coins collected"><span class="ico coin"></span><b id="stat-coins">0</b></div>
+          <button id="user-chip" class="user-chip" title="Player profile">
+            <span class="avatar"><i></i></span>
+            <span class="user-meta"><b>RUNNER</b><small>LVL <span id="stat-level">1</span></small></span>
+          </button>
+        </div>
+      </header>
+
+      <main id="screen-menu" class="screen menu-screen">
+        <section class="hero">
+          <div class="eyebrow"><span class="pulse-dot"></span> THE NEON RHYTHM EXPERIENCE</div>
+          <h1 class="logo-lockup" aria-label="Geomash">
+            <span class="logo-top">GEO</span><span class="logo-bottom">MASH</span>
+            <span class="logo-glitch" aria-hidden="true">GEOMASH</span>
+          </h1>
+          <p class="tagline">One cube. No brakes. <em>Pure rhythm.</em></p>
+          <div class="hero-actions">
+            <button id="btn-play" class="btn btn-primary btn-xl">
+              <span class="btn-arrow">▶</span>
+              <span class="btn-copy"><b>PLAY NOW</b><small id="play-level-name">01 / STEREO NEON</small></span>
+            </button>
+            <button id="btn-practice" class="btn btn-ghost btn-xl">
+              <span class="btn-copy"><b>PRACTICE</b><small>AUTO CHECKPOINTS</small></span>
+            </button>
+          </div>
+          <div class="hero-stats">
+            <div class="hero-stat"><b id="hero-best">0%</b><span>YOUR BEST</span></div>
+            <div class="hero-stat"><b id="hero-attempts">0</b><span>ATTEMPTS</span></div>
+            <div class="hero-stat"><b id="hero-jumps">0</b><span>JUMPS</span></div>
+            <div class="hero-stat accent"><b id="hero-completions">0</b><span>VICTORIES</span></div>
+          </div>
+          <div class="control-hint">
+            <span class="key">SPACE</span><span class="key">W</span><span class="key">↑</span>
+            <span class="hint-txt">JUMP / HOLD TO CHAIN</span>
+            <span class="mouse-hint"><i></i> OR CLICK ANYWHERE</span>
+          </div>
+        </section>
+
+        <aside class="deck" aria-label="Level deck">
+          <div class="deck-head">
+            <span>NOW RUNNING</span>
+            <span class="deck-count"><b id="deck-index">01</b> / <span id="deck-total">03</span></span>
+          </div>
+          <div id="level-card" class="level-card" data-accent="cyan">
+            <div class="card-art" aria-hidden="true">
+              <div class="art-grid"></div>
+              <div class="art-sun"></div>
+              <div class="art-spike s1"></div>
+              <div class="art-spike s2"></div>
+              <div class="art-spike s3"></div>
+              <div class="art-cube"><i></i></div>
+              <div class="art-floor"></div>
+              <div class="art-scan"></div>
+            </div>
+            <div class="card-body">
+              <div class="card-kicker"><span id="card-diff" class="diff normal">NORMAL</span><span id="card-bpm">128 BPM</span></div>
+              <h2 id="card-title">STEREO NEON</h2>
+              <p id="card-desc">A midnight sprint through a city of light. Find the rhythm, trust the jump.</p>
+              <div class="card-progress">
+                <div class="progress-meta"><span>BEST RUN</span><b id="card-best">0%</b></div>
+                <div class="pbar"><i id="card-fill" style="width:0%"></i></div>
+              </div>
+              <div class="card-foot">
+                <div class="card-rewards"><span class="r-star">★ <b id="card-stars">0</b>/3</span><span class="r-coin">● <b id="card-coins">0</b>/3</span></div>
+                <button id="btn-card-play" class="card-play">RUN <span>→</span></button>
+              </div>
+            </div>
+            <div class="card-corner tl"></div><div class="card-corner tr"></div>
+            <div class="card-corner bl"></div><div class="card-corner br"></div>
+          </div>
+          <div class="deck-nav">
+            <button id="deck-prev" class="deck-arrow" aria-label="Previous level">‹</button>
+            <div id="deck-dots" class="deck-dots"></div>
+            <button id="deck-next" class="deck-arrow" aria-label="Next level">›</button>
+          </div>
+          <div class="deck-tip"><span class="tip-label">TIP</span><span id="menu-tip">Hold jump to chain jumps the instant you land.</span></div>
+        </aside>
+      </main>
+
+      <section id="screen-levels" class="hidden screen overlay-screen">
+        <div class="overlay-head">
+          <div>
+            <div class="eyebrow"><span class="pulse-dot magenta"></span> SELECT YOUR RUN</div>
+            <h2 class="screen-title">LEVEL <em>DECK</em></h2>
+          </div>
+          <button class="btn btn-ghost btn-close" data-close="levels">CLOSE ✕</button>
+        </div>
+        <div id="level-grid" class="level-grid"></div>
+        <div class="levels-footer">
+          <span><b id="levels-completed">0</b> / 3 LEVELS CLEARED</span>
+          <span>ALL PROGRESS SAVED LOCALLY</span>
+        </div>
+      </section>
+
+      <section id="screen-help" class="hidden screen overlay-screen help-screen">
+        <div class="overlay-head">
+          <div>
+            <div class="eyebrow"><span class="pulse-dot lime"></span> FIELD MANUAL</div>
+            <h2 class="screen-title">HOW TO <em>MASH</em></h2>
+          </div>
+          <button class="btn btn-ghost btn-close" data-close="help">CLOSE ✕</button>
+        </div>
+        <div class="help-grid">
+          <article class="help-card"><div class="help-ico cube"></div><h3>THE CUBE</h3><p>Tap or hold to jump. Hold to auto-jump the moment you land. Keep your head.</p><span class="help-key">SPACE / CLICK</span></article>
+          <article class="help-card"><div class="help-ico ship"></div><h3>THE SHIP</h3><p>Hold to thrust upward, release to fall. Thread the gaps. Don't kiss the floor.</p><span class="help-key">HOLD / RELEASE</span></article>
+          <article class="help-card"><div class="help-ico wave"></div><h3>THE WAVE</h3><p>Hold to climb, release to dive. One touch and you're dust. Stay centered.</p><span class="help-key">HOLD / RELEASE</span></article>
+          <article class="help-card"><div class="help-ico orb"></div><h3>JUMP ORBS</h3><p>Tap while inside a glowing ring for a mid-air jump. Chain them for big air.</p><span class="help-key">TAP IN RING</span></article>
+          <article class="help-card"><div class="help-ico pad"></div><h3>BOOST PADS</h3><p>Hit a yellow pad to launch skyward automatically. No input required.</p><span class="help-key">AUTO BOOST</span></article>
+          <article class="help-card danger"><div class="help-ico spike"></div><h3>DON'T DIE</h3><p>Spikes, saws and walls are instant death. Portals swap your movement mode.</p><span class="help-key">STAY SHARP</span></article>
+        </div>
+        <div class="help-foot">PRACTICE MODE places checkpoints automatically. Progress tracks your best clean run.</div>
+      </section>
+
+      <section id="screen-settings" class="hidden screen overlay-screen settings-screen">
+        <div class="overlay-head">
+          <div>
+            <div class="eyebrow"><span class="pulse-dot cyan"></span> SYSTEM CONFIG</div>
+            <h2 class="screen-title">SETTINGS</h2>
+          </div>
+          <button class="btn btn-ghost btn-close" data-close="settings">CLOSE ✕</button>
+        </div>
+        <div class="settings-grid">
+          <div class="settings-panel">
+            <h3>AUDIO</h3>
+            <label class="slider-row"><span>MUSIC</span><input id="set-music" type="range" min="0" max="100" value="70" /><b id="set-music-val">70</b></label>
+            <label class="slider-row"><span>SFX</span><input id="set-sfx" type="range" min="0" max="100" value="80" /><b id="set-sfx-val">80</b></label>
+            <label class="toggle-row"><span>MUTE ALL</span><button id="set-mute" class="toggle" role="switch" aria-checked="false"><i></i></button></label>
+          </div>
+          <div class="settings-panel">
+            <h3>VISUALS</h3>
+            <label class="toggle-row"><span>BLOOM & GLOW</span><button id="set-bloom" class="toggle on" role="switch" aria-checked="true"><i></i></button></label>
+            <label class="toggle-row"><span>SCREEN SHAKE</span><button id="set-shake" class="toggle on" role="switch" aria-checked="true"><i></i></button></label>
+            <label class="toggle-row"><span>MOTION BLUR TRAIL</span><button id="set-trail" class="toggle on" role="switch" aria-checked="true"><i></i></button></label>
+            <label class="slider-row"><span>RENDER SCALE</span><input id="set-scale" type="range" min="50" max="100" step="25" value="100" /><b id="set-scale-val">100</b></label>
+          </div>
+          <div class="settings-panel">
+            <h3>GAME</h3>
+            <label class="toggle-row"><span>PRACTICE CHECKPOINTS</span><button id="set-checkpoints" class="toggle on" role="switch" aria-checked="true"><i></i></button></label>
+            <label class="toggle-row"><span>BEAT PULSE</span><button id="set-pulse" class="toggle on" role="switch" aria-checked="true"><i></i></button></label>
+            <div class="keymap"><span>JUMP</span><span class="key">SPACE</span><span class="key">W</span><span class="key">↑</span><span class="key">CLICK</span></div>
+            <div class="keymap"><span>PAUSE</span><span class="key">ESC</span><span class="key">P</span></div>
+          </div>
+        </div>
+        <div class="settings-foot">Geomash runs entirely in your browser. No downloads, no accounts, no excuses.</div>
+      </section>
+
+      <div id="hud" class="hud">
+        <div class="hud-top">
+          <div class="hud-level">
+            <span class="hud-kicker">NOW RUNNING</span>
+            <b id="hud-title">STEREO NEON</b>
+            <span id="hud-diff" class="diff normal">NORMAL</span>
+          </div>
+          <div class="hud-progress">
+            <div class="hud-progress-meta"><span id="hud-mode">CUBE</span><b id="hud-pct">0%</b></div>
+            <div class="hud-bar"><i id="hud-fill"></i><span id="hud-marker"></span></div>
+          </div>
+          <div class="hud-right">
+            <div class="hud-stat"><small>ATTEMPT</small><b id="hud-attempts">1</b></div>
+            <div class="hud-stat coins"><small>COINS</small><b><span class="mini-coin"></span><span id="hud-coins">0</span>/3</b></div>
+            <button id="btn-pause" class="icon-btn" aria-label="Pause">❚❚</button>
+          </div>
+        </div>
+        <div id="hud-toast" class="hud-toast"></div>
+        <div id="hud-start" class="hud-start">
+          <div class="start-line"></div>
+          <div class="start-title">READY?</div>
+          <div class="start-sub">TAP OR PRESS SPACE TO BEGIN</div>
+        </div>
+        <div id="practice-badge" class="practice-badge">PRACTICE MODE · CHECKPOINTS ON</div>
+        <div class="hud-bottom">
+          <div class="hud-controls"><span class="key">SPACE</span> JUMP <span class="divider">/</span> <span class="key">ESC</span> PAUSE</div>
+          <div class="hud-music"><span class="eq"><i></i><i></i><i></i><i></i></span><span id="hud-song">STEREO NEON — 128 BPM</span></div>
+        </div>
+        <div id="death-flash" class="death-flash"></div>
+      </div>
+
+      <section id="screen-pause" class="hidden screen modal-screen">
+        <div class="modal-card pause-card">
+          <div class="modal-kicker">RUN SUSPENDED</div>
+          <h2 class="modal-title">PAUSED</h2>
+          <div class="pause-stats">
+            <div><b id="pause-pct">0%</b><span>PROGRESS</span></div>
+            <div><b id="pause-attempts">1</b><span>ATTEMPTS</span></div>
+            <div><b id="pause-coins">0/3</b><span>COINS</span></div>
+          </div>
+          <div class="modal-actions">
+            <button id="btn-resume" class="btn btn-primary"><span class="btn-copy"><b>RESUME</b><small>BACK TO THE RUN</small></span></button>
+            <button id="btn-restart" class="btn btn-ghost"><span class="btn-copy"><b>RESTART</b><small>FROM THE TOP</small></span></button>
+            <button id="btn-quit" class="btn btn-ghost"><span class="btn-copy"><b>QUIT</b><small>MAIN MENU</small></span></button>
+          </div>
+          <div class="modal-tip">TIP — <span id="pause-tip">Hold jump to chain jumps the instant you land.</span></div>
+        </div>
+      </section>
+
+      <section id="screen-complete" class="hidden screen modal-screen">
+        <div class="modal-card complete-card">
+          <div class="complete-glow"></div>
+          <div class="modal-kicker">RUN COMPLETE</div>
+          <h2 class="modal-title">LEVEL <em>CLEARED</em></h2>
+          <div class="rank-row">
+            <div id="complete-rank" class="rank-badge">S</div>
+            <div class="rank-copy"><b id="complete-level">STEREO NEON</b><span id="complete-sub">CLEAN RUN · NO CHECKPOINTS</span></div>
+          </div>
+          <div class="complete-grid">
+            <div><b id="complete-time">0:00</b><span>TIME</span></div>
+            <div><b id="complete-attempts">1</b><span>ATTEMPTS</span></div>
+            <div><b id="complete-coins">0/3</b><span>COINS</span></div>
+            <div><b id="complete-stars">+0</b><span>STARS</span></div>
+          </div>
+          <div class="complete-actions">
+            <button id="btn-next-level" class="btn btn-primary"><span class="btn-copy"><b>NEXT LEVEL</b><small id="next-level-name">CYBER DRIFT</small></span></button>
+            <button id="btn-replay" class="btn btn-ghost"><span class="btn-copy"><b>RUN AGAIN</b><small id="replay-level-name">STEREO NEON</small></span></button>
+            <button id="btn-menu" class="btn btn-ghost"><span class="btn-copy"><b>MENU</b><small>MAIN HUB</small></span></button>
+          </div>
+        </div>
+      </section>
+
+      <div id="toast" class="toast"></div>
+      <div id="fps" class="fps">60 FPS</div>
+    </div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
